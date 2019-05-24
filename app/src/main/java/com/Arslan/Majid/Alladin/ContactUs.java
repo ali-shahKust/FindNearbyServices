@@ -41,7 +41,7 @@ public class ContactUs extends Fragment {
     }
     private void sendTestEmail(){
         BackgroundMail.newBuilder(getActivity())
-                .withUsername("alb121.aahmed@gmail.com")
+                .withUsername("mustafvi1122@gmail.com")
                 .withPassword("Alberuni@3600")
                 .withMailto("adeelhayat@gmail.com")
                 .withSubject(subject.getText().toString())

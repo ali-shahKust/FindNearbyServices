@@ -150,9 +150,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.dashboard:
                 fragmentClass = Dashboard.class;
                 break;
-//            case R.id.findservice:
-//                fragmentClass = FindService.class;
-//                break;
+            case R.id.findservice:
+                fragmentClass = FindService.class;
+                break;
             case R.id.profilesetting:
                 fragmentClass = ProfileSetting.class;
                 break;
