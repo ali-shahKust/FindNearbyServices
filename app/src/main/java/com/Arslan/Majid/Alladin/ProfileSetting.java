@@ -16,8 +16,8 @@ import android.widget.TextView;
 public class ProfileSetting extends Fragment {
     private ImageView iv;
     private Button editprofile,changepassword;
-    private TextView phone,gender,age,blood;
-    private TextView phone1,gender1,age1,blood1;
+    private TextView name, phone,gender,age,blood;
+
     public ProfileSetting() {
         // Required empty public constructor
     }
@@ -28,6 +28,7 @@ public class ProfileSetting extends Fragment {
                              Bundle savedInstanceState) {
 
         View view= inflater.inflate(R.layout.fragment_profile_setting, container, false);
+
 
 
         editprofile=(Button)view.findViewById(R.id.editProfile);

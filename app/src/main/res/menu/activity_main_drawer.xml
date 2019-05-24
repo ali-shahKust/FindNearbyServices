@@ -8,10 +8,10 @@
             android:id="@+id/dashboard"
             android:icon="@drawable/ic_dashboard"
             android:title="Dashboard" />
-        <item
-            android:id="@+id/findservice"
-            android:icon="@drawable/ic_search"
-            android:title="Find Service" />
+        <!--<item-->
+            <!--android:id="@+id/findservice"-->
+            <!--android:icon="@drawable/ic_search"-->
+            <!--android:title="Find Service" />-->
         <item
             android:id="@+id/profilesetting"
             android:icon="@drawable/ic_person"

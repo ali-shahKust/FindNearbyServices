@@ -4,125 +4,44 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Users implements Serializable {
-    @SerializedName("Id")
-    private String Id;
-    @SerializedName("FullName")
-    private String FullName;
-    @SerializedName("Username")
-    private  String Username;
-    @SerializedName("Password")
-    private String Password;
-    @SerializedName("PhoneNumber")
-    private String PhoneNumber;
-    @SerializedName("Gender")
-    private  String Gender;
-    @SerializedName("DOB")
-    private  String DOB;
-    @SerializedName("Role")
-    private  String Role;
-    @SerializedName("City")
-    private  String City;
-    @SerializedName("Longitude")
-    private  double Longitude;
-    @SerializedName("Latitude")
-    private  double Latitude;
+public class Users {
 
-    public String getId() {
-        return Id;
+    public static String user_name;
+    public  static String user_password;
+    public static  String user_phone;
+
+    public Users(String user_name, String user_phone , String user_password) {
+        this.user_name = user_name;
+        this.user_phone = user_phone;
+        this.user_password = user_password;
     }
 
-    public void setId(String id) {
-        Id = id;
+    public static String getUser_password() {
+        return user_password;
     }
 
-    public String getFullName() {
-        return FullName;
+    public static void setUser_password(String user_password) {
+        Users.user_password = user_password;
     }
 
-    public void setFullName(String fullName) {
-        FullName = fullName;
+    public String getUser_name() {
+        return user_name;
     }
 
-    public String getUsername() {
-        return Username;
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 
-    public void setUsername(String username) {
-        Username = username;
+    public String getUser_phone() {
+        return user_phone;
     }
 
-    public String getPassword() {
-        return Password;
+    public void setUser_phone(String user_phone) {
+        this.user_phone = user_phone;
     }
 
-    public void setPassword(String password) {
-        Password = password;
+    public Users(){
+
     }
 
-    public String getPhoneNumber() {
-        return PhoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        PhoneNumber = phoneNumber;
-    }
-
-    public String getGender() {
-        return Gender;
-    }
-
-    public void setGender(String gender) {
-        Gender = gender;
-    }
-
-    public String getDOB() {
-        return DOB;
-    }
-
-    public void setDOB(String DOB) {
-        this.DOB = DOB;
-    }
-
-    public String getRole() {
-        return Role;
-    }
-
-    public void setRole(String role) {
-        Role = role;
-    }
-
-    public String getCity() {
-        return City;
-    }
-
-    public void setCity(String city) {
-        City = city;
-    }
-
-    public double getLongitude() {
-        return Longitude;
-    }
-
-    public void setLongitude(float longitude) {
-        Longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return Latitude;
-    }
-
-    public void setLatitude(float latitude) {
-        Latitude = latitude;
-    }
-    //id,name1,Email1,Password1,age1,role1
-
-    public Users(String id, String fullName, String username, String password, String DOB, String role) {
-        Id = id;
-        FullName = fullName;
-        Username = username;
-        Password = password;
-        this.DOB = DOB;
-        Role = role;
-    }
 }

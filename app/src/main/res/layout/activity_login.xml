@@ -48,15 +48,15 @@
                     android:orientation="vertical">
 
                     <EditText
-                        android:id="@+id/loginemail"
+                        android:id="@+id/loginphone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/edbg"
+                        android:drawableStart="@drawable/phoneicon"
                         android:drawableLeft="@drawable/ic_fullname"
                         android:drawablePadding="10dp"
-                        android:drawableStart="@drawable/ic_email_address"
-                        android:hint="E-mail Address"
-                        android:inputType="textEmailAddress" />
+                        android:hint="Phone number +92..."
+                        android:inputType="number|phone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -109,7 +109,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                       android:background="#e06666"
+                       android:background="@drawable/buttondesign"
                         android:text="Sign In"
                         android:textColor="@color/white"
                         android:textSize="16sp"

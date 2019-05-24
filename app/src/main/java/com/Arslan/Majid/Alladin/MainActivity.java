@@ -1,6 +1,8 @@
 package com.Arslan.Majid.Alladin;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -17,13 +19,25 @@ import android.support.v7.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.Arslan.Majid.Alladin.entities.Users;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private    DrawerLayout drawer;
     private Fragment fragment;
+    private DatabaseReference mRootref;
+    private FirebaseAuth mAuth;
+    //FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +48,9 @@ public class MainActivity extends AppCompatActivity
         tx.replace(R.id.flContent, new Dashboard());
         tx.commit();
 
+        mRootref = FirebaseDatabase.getInstance().getReference("User");
 
+        mAuth = FirebaseAuth.getInstance();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,6 +72,40 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+
+        final TextView userNametxt = headerView.findViewById(R.id.UsernameTxt);
+
+
+        final TextView userPhoneNumber = headerView.findViewById(R.id.PhoneNumberTxt);
+
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        mRootref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("User").child("user_name").exists()){
+                    Users usersData = dataSnapshot.getValue(Users.class);
+                    usersData.getUser_name();
+                    userNametxt.setText(Users.user_name);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
@@ -100,9 +150,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.dashboard:
                 fragmentClass = Dashboard.class;
                 break;
-            case R.id.findservice:
-                fragmentClass = FindService.class;
-                break;
+//            case R.id.findservice:
+//                fragmentClass = FindService.class;
+//                break;
             case R.id.profilesetting:
                 fragmentClass = ProfileSetting.class;
                 break;
@@ -142,4 +192,16 @@ public class MainActivity extends AppCompatActivity
 
         return view;
     }
+
+
+//    public void onStart() {
+//        super.onStart();
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if(currentUser== null){
+//            Intent intent = new Intent(MainActivity.this, Login.class);
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
 }

@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +43,7 @@ public class Register extends AppCompatActivity {
     private Button signup;
     GoogleMap mGoogleMap;
     DatabaseReference dbUser;
+    private FirebaseDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class Register extends AppCompatActivity {
     }
 
     private void AddUser() {
-        final String name1 = fullname.getText().toString();
+         final String name1 = fullname.getText().toString();
         String Phone = phone.getText().toString();
         String pass = password.getText().toString();
         String age1 = age.getText().toString();
@@ -97,6 +99,9 @@ public class Register extends AppCompatActivity {
                  map.put("user_phone", phone.getText().toString());
                  map.put("user_role", role1);
                  map.put("user_age", age.getText().toString().trim());
+                 map.put("user_password", password.getText().toString());
+
+
                  dbUser.push()
                          .setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                      @Override
