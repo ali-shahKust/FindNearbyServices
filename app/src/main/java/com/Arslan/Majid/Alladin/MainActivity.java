@@ -21,9 +21,12 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.Arslan.Majid.Alladin.adapter.ServiceViewHolder;
+import com.Arslan.Majid.Alladin.entities.Servicesfinder;
 import com.Arslan.Majid.Alladin.entities.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +40,6 @@ public class MainActivity extends AppCompatActivity
     private Fragment fragment;
     private DatabaseReference mRootref;
     private FirebaseAuth mAuth;
-    //FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,21 +82,23 @@ public class MainActivity extends AppCompatActivity
         final TextView userPhoneNumber = headerView.findViewById(R.id.PhoneNumberTxt);
 
         final DatabaseReference RootRef;
-        RootRef = FirebaseDatabase.getInstance().getReference();
+        //RootRef = FirebaseDatabase.getInstance().getReference();
+
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+
         mRootref.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("User").child("user_name").exists()){
-                    Users usersData = dataSnapshot.getValue(Users.class);
-                    usersData.getUser_name();
-                    userNametxt.setText(Users.user_name);
-
-                }
+                String user_name = dataSnapshot.child("user_name").getValue(String.class);
+                userNametxt.setText(user_name);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+
+                databaseError.getMessage();
             }
         });
 
@@ -188,6 +192,7 @@ public class MainActivity extends AppCompatActivity
                              Bundle savedInstanceState) {
 
         View view=inflater.inflate(R.layout.nav_header_main, container, false);
+
 
 
         return view;

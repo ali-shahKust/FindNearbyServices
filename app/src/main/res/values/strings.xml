@@ -41,6 +41,8 @@ would get in touch with you to address it.</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="user_name">User Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="usernameheader">User Name</string>
 
 
     <string-array name="occurence">

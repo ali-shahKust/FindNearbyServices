@@ -41,8 +41,7 @@
             android:layout_width="56dp"
             android:layout_height="31dp"
             android:layout_alignBaseline="@+id/usernameview"
-
-
+            android:id="@+id/role"
             android:layout_alignStart="@+id/usernameview"
             android:layout_alignLeft="@+id/usernameview"
             android:layout_alignTop="@+id/usernameview"

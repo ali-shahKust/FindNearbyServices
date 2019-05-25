@@ -5,7 +5,9 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:paddingTop="20dp"
-    android:paddingLeft="20dp">
+    android:paddingLeft="20dp"
+    android:id="@+id/nav_head_main"
+    >
 
     <ImageView
         android:layout_width="120dp"
@@ -21,13 +23,13 @@
         android:textColor="@color/colorWhite"
         android:textSize="22sp"
         android:id="@+id/UsernameTxt"
-        android:text="User Name"/>
+        android:text="@string/usernameheader"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/PhoneNumberTxt"
         android:textColor="@color/colorWhite"
-        android:text="Phone Number"/>
+        android:text="@string/phone_number"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

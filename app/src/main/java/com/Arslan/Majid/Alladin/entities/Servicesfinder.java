@@ -2,7 +2,7 @@ package com.Arslan.Majid.Alladin.entities;
 
 public class Servicesfinder {
 
-    public String user_name , user_role , user_phone;
+    public static String user_name , user_role , user_phone;
 
     public Servicesfinder(String user_name, String user_role, String user_phone) {
         this.user_name = user_name;
