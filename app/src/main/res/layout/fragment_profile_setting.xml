@@ -38,19 +38,20 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="16dp"
                 android:layout_weight="2"
                 android:orientation="vertical"
 
                 android:weightSum="2">
 
                 <EditText
+                    android:id="@+id/editName"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.9"
                     android:background="@drawable/edbg"
-                    android:hint="Name:"
 
+                    android:hint="Name:"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:textColor="@color/colorTextgray"
@@ -59,95 +60,52 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_weight="2"
+                android:layout_gravity="center"
                 android:orientation="vertical"
                 android:paddingTop="5dp"
 
                 android:weightSum="2">
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/profile"
+                    android:id="@+id/getProfileImg"
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.98"
-                    android:background="@drawable/edbg"
-                    android:hint="Email/UseName"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:textColor="@color/colorTextgray"
-                    android:textColorHint="@color/black"
-                    android:textSize="16sp" />
+                    />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:orientation="vertical"
+                android:gravity="center"
+                android:orientation="horizontal"
                 android:weightSum="2">
 
-                <Spinner
-                    android:id="@+id/spinner1"
-                    style="@style/Widget.AppCompat.DropDownItem.Spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.9"
-                    android:background="@drawable/edbg"
+                <Button
+                    android:id="@+id/editProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    android:background="@color/colorPrimaryDark"
+                    android:text="@string/save_profile"
+                    android:textColor="@color/white" />
+                <!--<Button-->
+                    <!--android:id="@+id/updateIMG"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="0.9"-->
+                    <!--android:background="@color/colorPrimaryDark"-->
+                    <!--android:text="Change Image"-->
+                    <!--android:layout_marginLeft="5dp"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/white" />-->
 
-
-                    android:entries="@array/services" />
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="vertical"
-                android:weightSum="2">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.9"
-                    android:background="@drawable/edbg"
-                    android:hint="Age "
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:textColor="@color/colorTextgray"
-                    android:textColorHint="@color/black"
-                    android:textSize="16sp" />
-            </LinearLayout>
-            <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-              android:layout_weight="2"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <Button
-                android:id="@+id/editProfile"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                android:background="@color/colorPrimaryDark"
-                android:text="Save Profile"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/ChangePassword"
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="0.9"
-                android:background="@color/colorPrimaryDark"
-                android:text="Change Password"
-
-                android:textColor="@color/white" />
-        </LinearLayout>
         </LinearLayout>
 
 

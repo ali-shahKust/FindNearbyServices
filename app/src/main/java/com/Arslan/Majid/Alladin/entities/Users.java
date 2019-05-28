@@ -6,42 +6,61 @@ import java.io.Serializable;
 
 public class Users {
 
-    public static String user_name;
-    public  static String user_password;
-    public static  String user_phone;
+    public static String name, phone, password, image, address;
 
-    public Users(String user_name, String user_phone , String user_password) {
-        this.user_name = user_name;
-        this.user_phone = user_phone;
-        this.user_password = user_password;
-    }
 
-    public static String getUser_password() {
-        return user_password;
-    }
 
-    public static void setUser_password(String user_password) {
-        Users.user_password = user_password;
-    }
-
-    public String getUser_name() {
-        return user_name;
-    }
-
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
-    }
-
-    public String getUser_phone() {
-        return user_phone;
-    }
-
-    public void setUser_phone(String user_phone) {
-        this.user_phone = user_phone;
-    }
-
-    public Users(){
+    public Users()
+    {
 
     }
 
+    public Users(String name, String phone, String password, String image, String address) {
+        this.name = name;
+        this.phone = phone;
+        this.password = password;
+        this.image = image;
+        this.address = address;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

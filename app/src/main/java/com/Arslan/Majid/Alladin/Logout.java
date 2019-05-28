@@ -20,9 +20,9 @@ public class Logout extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_logout, container, false);
+     View view= inflater.inflate(R.layout.fragment_logout, container, false);
         Intent intent = new Intent(getActivity(), Login.class);
-        startActivity(intent);
+      startActivity(intent);
         return view;
     }
 }

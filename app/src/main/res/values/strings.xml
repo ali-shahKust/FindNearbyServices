@@ -8,6 +8,7 @@
     <string name="action_settings">Settings</string>
     <string name="CONTACT_US">Please send us a message with your grievance and we
 would get in touch with you to address it.</string>
+    <string name="firebase_path">location</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="app_name">AlaDin</string>
@@ -43,6 +44,8 @@ would get in touch with you to address it.</string>
     <string name="user_name">User Name</string>
     <string name="phone_number">Phone Number</string>
     <string name="usernameheader">User Name</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="email_adress">Email Adress</string>
 
 
     <string-array name="occurence">

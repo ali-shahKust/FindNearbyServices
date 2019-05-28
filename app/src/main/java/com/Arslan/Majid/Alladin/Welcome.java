@@ -35,7 +35,7 @@ public class Welcome extends AppCompatActivity {
         title.startAnimation(animation);
         imageView.startAnimation(animation);
 
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, Login.class);
         Thread timer = new Thread() {
             public void run() {
                 try {

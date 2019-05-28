@@ -63,8 +63,12 @@ dependencies {
     //firebasee dependenciess
     implementation 'com.google.firebase:firebase-auth:17.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.7'
-   implementation  'com.google.firebase:firebase-database:17.0.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation  'com.google.firebase:firebase-database:17.0.0'
 
     implementation 'com.firebaseui:firebase-ui-database:3.2.2'
+
+    implementation 'com.google.firebase:firebase-storage:17.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

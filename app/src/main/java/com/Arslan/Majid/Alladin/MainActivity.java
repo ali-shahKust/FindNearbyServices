@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import android.support.v4.app.Fragment;
@@ -19,19 +20,22 @@ import android.support.v7.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.Arslan.Majid.Alladin.adapter.ServiceViewHolder;
+import com.Arslan.Majid.Alladin.Prevalent.Prevalent;
 import com.Arslan.Majid.Alladin.entities.Servicesfinder;
 import com.Arslan.Majid.Alladin.entities.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity
         tx.commit();
 
         mRootref = FirebaseDatabase.getInstance().getReference("User");
+        //DatabaseReference UsersRef = FirebaseDatabase.getInstance().getReference().child("User");
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -81,38 +87,67 @@ public class MainActivity extends AppCompatActivity
 
         final TextView userPhoneNumber = headerView.findViewById(R.id.PhoneNumberTxt);
 
+        final ImageView myImageview = headerView.findViewById(R.id.myImageview);
+
         final DatabaseReference RootRef;
-        //RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef = FirebaseDatabase.getInstance().getReference();
 
-        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+        FirebaseUser current_user_id = mAuth.getCurrentUser();
+        final String uid=current_user_id.getUid();
 
-        mRootref.addValueEventListener(new ValueEventListener() {
-
+        final DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String user_name = dataSnapshot.child("user_name").getValue(String.class);
-                userNametxt.setText(user_name);
+
+
+                    String username = dataSnapshot.child("user_name").getValue().toString();
+                    String phonenum = dataSnapshot.child("user_phone").getValue().toString();
+//                   String getimage = dataSnapshot.child("image").getValue().toString();
+                    userNametxt.setText(username);
+                    System.err.println("User name is " + username);
+                    userPhoneNumber.setText(phonenum);
+
+                   // Picasso.get().load(getimage).placeholder(R.drawable.profile).into(myImageview);
+
+
+
+        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        final DatabaseReference imgRef = FirebaseDatabase.getInstance().getReference().child("Profile_image").child(uid);
+        imgRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+try {
+    String getimage = dataSnapshot.child("image").getValue().toString();
+    Picasso.get().load(getimage).placeholder(R.drawable.profile).into(myImageview);
+
+}
+catch (Exception err){
+    err.getMessage();
+}
+
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
-
-                databaseError.getMessage();
             }
         });
 
 
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
-            finish();
-        }
-    }
 
-    @Override
+
+    }
+        @Override
     public void onBackPressed() {
          drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -161,7 +196,10 @@ public class MainActivity extends AppCompatActivity
                 fragmentClass = ProfileSetting.class;
                 break;
             case R.id.logout:
+
                 fragmentClass = Logout.class;
+
+
                 break;
             case R.id.contact:
                 fragmentClass = ContactUs.class;
@@ -196,6 +234,18 @@ public class MainActivity extends AppCompatActivity
 
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser== null) {
+            Intent intent = new Intent(MainActivity.this , Login.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
 

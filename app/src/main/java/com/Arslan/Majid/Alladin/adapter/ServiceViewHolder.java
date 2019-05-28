@@ -32,4 +32,6 @@ public class ServiceViewHolder extends RecyclerView.ViewHolder implements View.O
 
         itemClickListener.onClick(view , getAdapterPosition() , false);
     }
+
+
 }

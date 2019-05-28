@@ -3,6 +3,7 @@ package com.Arslan.Majid.Alladin;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.Arslan.Majid.Alladin.entities.Users;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -27,18 +29,29 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 
 public class Dashboard extends Fragment implements OnMapReadyCallback,
-        LocationListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        LocationListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     private GoogleMap mMap;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
+    private static final int PERMISSIONS_REQUEST = 100;
 
-    public Dashboard(){
+
+    public Dashboard() {
     }
 
     @Nullable
@@ -51,6 +64,8 @@ public class Dashboard extends Fragment implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        getUsersLocation();
 
 
         return view;
@@ -67,13 +82,13 @@ public class Dashboard extends Fragment implements OnMapReadyCallback,
                 buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             }
-        }
-        else {
+        } else {
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
 
     }
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
@@ -130,7 +145,35 @@ public class Dashboard extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        connectionResult.getErrorMessage();
 
     }
 
+    private void getUsersLocation() {
+        final List<Users> list = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    mMap.clear();
+                    for (DataSnapshot i : dataSnapshot.getChildren()) {
+                        MyModel obj = i.getValue(MyModel.class);
+                        MarkerOptions options = new MarkerOptions().position(new LatLng(Double.parseDouble(obj.latitude), Double.parseDouble(obj.longitude))).title(obj.user_name).snippet(obj.user_role);
+                        mMap.addMarker(options);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+}
+
+class MyModel {
+    public String latitude, longitude, user_role, user_name;
 }

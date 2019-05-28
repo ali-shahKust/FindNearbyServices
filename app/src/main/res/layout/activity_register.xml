@@ -88,8 +88,8 @@ tools:context=".Register">
                     android:background="@drawable/edbg"
                     android:drawableLeft="@drawable/phoneicon"
                     android:drawablePadding="10dp"
-                    android:hint="Phone Number"
-                    android:inputType="number|phone" />
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
             </LinearLayout>
 
             <LinearLayout
@@ -135,15 +135,6 @@ tools:context=".Register">
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edbg"
-                    android:drawableLeft="@drawable/ic_password"
-                    android:drawablePadding="15dp"
-                    android:hint="Confirm password"
-                    android:id="@+id/registerconfirmpassword"
-                    android:inputType="textPassword" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -152,7 +143,6 @@ tools:context=".Register">
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
                 <Spinner
-                    style="@style/Widget.AppCompat.DropDownItem.Spinner"
                     android:id="@+id/registerrole"
                     android:background="@drawable/edbg"
                     android:layout_width="match_parent"
