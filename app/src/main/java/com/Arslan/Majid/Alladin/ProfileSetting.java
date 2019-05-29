@@ -77,6 +77,7 @@ public class ProfileSetting extends Fragment {
         editprofile = (Button) view.findViewById(R.id.editProfile);
         editName = (EditText) view.findViewById(R.id.editName);
         imageview = (ImageView) view.findViewById(R.id.getProfileImg);
+        mprogressBar = new ProgressDialog(getContext());
 
         FirebaseUser current_user_id = mAuth.getCurrentUser();
         final String uid = current_user_id.getUid();
@@ -149,10 +150,11 @@ catch (Exception error){
     }
 
     private void ValidateName() {
+        mprogressBar.setTitle("Updating Profile");
+        mprogressBar.setMessage("Please Wait");
         FirebaseUser current_user_id = mAuth.getCurrentUser();
         final String uid = current_user_id.getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
-
 
         HashMap<String, Object> userMap = new HashMap<>();
         userMap.put("user_name", editName.getText().toString());
@@ -162,7 +164,7 @@ catch (Exception error){
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getContext(), "Name Updated successfully.", Toast.LENGTH_SHORT).show();
-
+                    mprogressBar.dismiss();
                 }
                 if (!task.isSuccessful()) {
                     task.getException();
@@ -214,7 +216,9 @@ catch (Exception error){
 
     private void StoreProductInformation() {
 
-
+mprogressBar.setTitle("Updating Pofile");
+mprogressBar.setMessage("Please wait..");
+mprogressBar.show();
         Calendar calendar = Calendar.getInstance();
 
         SimpleDateFormat currentDate = new SimpleDateFormat("MM dd , yyyy");
@@ -245,6 +249,7 @@ catch (Exception error){
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(getActivity(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
+
                 Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -265,6 +270,7 @@ catch (Exception error){
 
 
                             Toast.makeText(getActivity(), "Getting Url of Image", Toast.LENGTH_SHORT).show();
+                            mprogressBar.dismiss();
 
                             mRootRef.setValue(downloadImgUrl);
 

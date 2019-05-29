@@ -1,10 +1,14 @@
 package com.Arslan.Majid.Alladin;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -71,6 +75,7 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         mAuth = FirebaseAuth.getInstance();
@@ -88,6 +93,8 @@ public class Register extends AppCompatActivity {
                 finish();
             }
         });
+        statusCheck();
+
 
         fullname = (EditText) findViewById(R.id.fullname);
         phone = (EditText) findViewById(R.id.registerphone);
@@ -103,6 +110,7 @@ public class Register extends AppCompatActivity {
                 if(!TextUtils.isEmpty(fullname.getText().toString()) || !TextUtils.isEmpty(phone.getText().toString()) || !TextUtils.isEmpty(password.getText().toString())) {
 
                                     }
+
 
                 String device_token = FirebaseInstanceId.getInstance().getToken();
                 String fullname1 = fullname.getText().toString();
@@ -136,7 +144,7 @@ public class Register extends AppCompatActivity {
                 } else {
 
                     mProgress.hide();
-                    Toast.makeText(Register.this, "Cannot Sign in. Please check the form and try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Register.this, "Cannot Sign Up . Please check the form Or Location Service and try again.", Toast.LENGTH_LONG).show();
                     String e ;
 
 
@@ -239,8 +247,13 @@ public class Register extends AppCompatActivity {
 
             ActivityCompat.requestPermissions(Register.this, arr, 69);
 
+
+
+
         } else {
+
             getLocation();
+
         }
     }
 
@@ -268,7 +281,7 @@ public class Register extends AppCompatActivity {
                     userMap.put("user_name", fullname.getText().toString());
                     userMap.put("user_phone",phone.getText().toString());
                     userMap.put("user_role", role.getSelectedItem().toString());
-                    userMap.put("user_age", age.getText().toString().trim());
+                    userMap.put("user_number", age.getText().toString().trim());
                     userMap.put("user_password", password.getText().toString());
                     userMap.put("device_token", device_token);
                     userMap.put("latitude", String.valueOf(location.getLatitude()));
@@ -290,6 +303,8 @@ public class Register extends AppCompatActivity {
                             }
 
                             if(!task.isSuccessful()){
+
+
                                 task.getException();
                             }
 
@@ -315,6 +330,38 @@ public class Register extends AppCompatActivity {
             }
             getLocation();
         }
+    }
+
+    public void statusCheck() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+
+        }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        Toast.makeText(Register.this, "Enable Gps First", Toast.LENGTH_SHORT).show();
+                        Intent intent  = new Intent(Register.this , Login.class);
+                        startActivity(intent);
+                        finish();
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }
 

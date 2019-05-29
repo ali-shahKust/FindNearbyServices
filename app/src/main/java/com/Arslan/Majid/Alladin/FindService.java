@@ -82,12 +82,13 @@ public class FindService extends Fragment {
                         holder.UserName.setText(model.getUser_name());
                         holder.UserPhone.setText(model.getUser_phone());
                         holder.UserRole.setText(model.getUser_role());
+
                     }
 
                     @NonNull
                     @Override
                     public ServiceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-                    {
+
                         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_find, parent, false);
                         ServiceViewHolder holder = new ServiceViewHolder(view);
                         return holder;

@@ -72,6 +72,7 @@ tools:context=".Register">
                 android:orientation="vertical">
 
 
+
             </LinearLayout>
 
             <LinearLayout
@@ -86,7 +87,7 @@ tools:context=".Register">
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edbg"
-                    android:drawableLeft="@drawable/phoneicon"
+                    android:drawableLeft="@drawable/ic_email"
                     android:drawablePadding="10dp"
                     android:hint="Email"
                     android:inputType="textEmailAddress" />
@@ -106,8 +107,8 @@ tools:context=".Register">
                     android:background="@drawable/edbg"
                     android:drawableLeft="@drawable/ic_phone_number"
                     android:drawablePadding="10dp"
-                    android:hint="Age"
-                    android:inputType="number" />
+                    android:hint="@string/phone_number"
+                    android:inputType="phone" />
             </LinearLayout>
 
             <LinearLayout

@@ -1,9 +1,10 @@
 package com.Arslan.Majid.Alladin;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,7 +23,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -36,8 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 
 public class Dashboard extends Fragment implements OnMapReadyCallback,
@@ -157,9 +155,30 @@ public class Dashboard extends Fragment implements OnMapReadyCallback,
                 if (dataSnapshot.exists()) {
                     mMap.clear();
                     for (DataSnapshot i : dataSnapshot.getChildren()) {
-                        MyModel obj = i.getValue(MyModel.class);
-                        MarkerOptions options = new MarkerOptions().position(new LatLng(Double.parseDouble(obj.latitude), Double.parseDouble(obj.longitude))).title(obj.user_name).snippet(obj.user_role);
-                        mMap.addMarker(options);
+                          MyModel obj = i.getValue(MyModel.class);
+                        MarkerOptions options = new MarkerOptions().position(new LatLng(Double.parseDouble(obj.latitude), Double.parseDouble(obj.longitude))).title(obj.user_role).snippet(obj.user_number);
+                        System.err.println("this is marker" + options);
+                        System.err.println("Number is " + obj.user_number);
+                       // final String number  = obj.user_number;
+
+                        Marker marker = mMap.addMarker(options);
+                        marker.showInfoWindow();
+
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+                                //Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", obj.user_number, null));
+                                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                                String var = marker.getSnippet();
+                                callIntent.setData(Uri.parse("tel:"+var));
+
+
+                                Intent chooser= Intent.createChooser(callIntent,"Phone");
+
+                                startActivity(chooser);
+                                return false;
+                            }
+                        });
                     }
                 }
             }
@@ -175,5 +194,6 @@ public class Dashboard extends Fragment implements OnMapReadyCallback,
 }
 
 class MyModel {
-    public String latitude, longitude, user_role, user_name;
+    public  String latitude, longitude, user_role, user_name , user_number;
+
 }
