@@ -42,7 +42,7 @@ public class ContactUs extends Fragment {
     private void sendTestEmail(){
         BackgroundMail.newBuilder(getActivity())
                 .withUsername("mustafvi1122@gmail.com")
-                .withPassword("Alberuni@3600")
+                .withPassword("03245744179M")
                 .withMailto("adeelhayat@gmail.com")
                 .withSubject(subject.getText().toString())
                 .withBody("Name:   "+name.getText().toString()+"\nEmail:  "+email.getText().toString()+"\nMessage:  "+message.getText().toString())
@@ -60,6 +60,5 @@ public class ContactUs extends Fragment {
                 })
                 .send();
     }
-    //feedback@pakistandoingbusiness.com
 
 }

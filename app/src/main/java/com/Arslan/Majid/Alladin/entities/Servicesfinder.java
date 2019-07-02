@@ -12,13 +12,7 @@ public class Servicesfinder {
 
     }
 
-    public static String getUser_number() {
-        return user_number;
-    }
 
-    public static void setUser_number(String user_number) {
-        Servicesfinder.user_number = user_number;
-    }
 
     public String getUser_name() {
         return user_name;
@@ -45,5 +39,12 @@ public class Servicesfinder {
     }
     public Servicesfinder(){
         //Empty Constructor
+    }
+    public static String getUser_number() {
+        return user_number;
+    }
+
+    public static void setUser_number(String user_number) {
+        Servicesfinder.user_number = user_number;
     }
 }

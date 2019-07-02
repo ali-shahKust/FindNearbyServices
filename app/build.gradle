@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     //firebasee dependenciess
     implementation 'com.google.firebase:firebase-auth:17.0.0'
-    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation  'com.google.firebase:firebase-database:17.0.0'
@@ -70,5 +70,11 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:3.2.2'
 
     implementation 'com.google.firebase:firebase-storage:17.0.0'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+
+    //firbase ends
+
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'com.amitshekhar.android:android-networking:1.0.2'
 }
 apply plugin: 'com.google.gms.google-services'

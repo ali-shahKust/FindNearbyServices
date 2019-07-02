@@ -72,5 +72,9 @@ would get in touch with you to address it.</string>
         <item>300</item>
     </string-array>
 
+    <string name="default_notification_channel_id">Aladin</string>
+    <string name="fcm_message">Notification</string>
+    <string name="google_maps_key">AIzaSyBzZirZNzACXGcRlC2xhmGX-eVFtnp_XWs</string>
+    <string name="google_directions">AIzaSyD_JBsIL9KNEn8p2rv7LEkLKOoCU3jolN0</string>
 
 </resources>

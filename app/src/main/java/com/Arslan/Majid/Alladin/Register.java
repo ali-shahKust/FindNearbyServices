@@ -24,9 +24,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -47,7 +52,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -84,6 +93,8 @@ public class Register extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
         dbUser = FirebaseDatabase.getInstance().getReference("Users");
 
+
+
         signin = (TextView) findViewById(R.id.txtSignIn);
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,9 +120,7 @@ public class Register extends AppCompatActivity {
             public void onClick(View v) {
                 if(!TextUtils.isEmpty(fullname.getText().toString()) || !TextUtils.isEmpty(phone.getText().toString()) || !TextUtils.isEmpty(password.getText().toString())) {
 
-                                    }
-
-
+                }
                 String device_token = FirebaseInstanceId.getInstance().getToken();
                 String fullname1 = fullname.getText().toString();
                 String phone1 = phone.getText().toString();
@@ -137,6 +146,8 @@ public class Register extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
+
+
                 if(task.isSuccessful()){
 
                     getPermissions();
@@ -145,7 +156,7 @@ public class Register extends AppCompatActivity {
 
                     mProgress.hide();
                     Toast.makeText(Register.this, "Cannot Sign Up . Please check the form Or Location Service and try again.", Toast.LENGTH_LONG).show();
-                    String e ;
+
 
 
                 }
@@ -154,6 +165,7 @@ public class Register extends AppCompatActivity {
         });
 
     }
+
 
 
 
@@ -268,16 +280,68 @@ public class Register extends AppCompatActivity {
 
 
 
-                    FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-                    String uid = current_user.getUid();
-                    String device_token = FirebaseInstanceId.getInstance().getToken();
+
+                    final FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+                  //  FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+                    final String uid = current_user.getUid();
+
+                    try {
+                        Log.e("uid", uid);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    final String device_token = FirebaseInstanceId.getInstance().getToken();
+
+
+                    FirebaseInstanceId.getInstance().getInstanceId()
+                            .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                    if (!task.isSuccessful()) {
+                                        Log.e("aladin", "getInstanceId failed", task.getException());
+                                        return;
+                                    }
+
+                                    // Get new Instance ID token
+                                    String token = task.getResult().getToken();
+
+
+
+                                    Log.d("token",token);
+                                    // Log and toast
+                                  /*  String msg = getString(R.string.msg_token_fmt, token);
+
+                                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();*/
+                                }
+                            });
+
+                    FirebaseMessaging.getInstance().subscribeToTopic(uid)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    String msg = "Subscribed";
+                                    if (!task.isSuccessful()) {
+                                        msg = "Subscription failed";
+                                    }
+                                    Log.e("sub", msg);
+                                    Toast.makeText(Register.this, msg, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
+
+
+
+
 
                     mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
 
 
 
 
-                    HashMap<String, String> userMap = new HashMap<>();
+                    final HashMap<String, String> userMap = new HashMap<>();
                     userMap.put("user_name", fullname.getText().toString());
                     userMap.put("user_phone",phone.getText().toString());
                     userMap.put("user_role", role.getSelectedItem().toString());
@@ -291,9 +355,37 @@ public class Register extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 
+
                             if(task.isSuccessful()){
 
                                 mProgress.dismiss();
+
+
+                                try {
+                                    Log.e("user", current_user.getEmail());
+
+                                    Log.e("token", device_token);
+
+                                } catch (Exception e ){
+                                    e.printStackTrace();
+                                }
+
+                                AndroidNetworking.get("https://translationchatapp.herokuapp.com/createUserToken/"+current_user.getEmail()+"/"+device_token)
+                                        .setTag("test")
+                                        .setPriority(Priority.MEDIUM)
+                                        .build()
+                                        .getAsJSONObject(new JSONObjectRequestListener() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                // do anything with response
+
+                                                Log.e("res", response.toString());
+                                            }
+                                            @Override
+                                            public void onError(ANError error) {
+                                                // handle error
+                                            }
+                                        });
 
                                 Intent mainIntent = new Intent(Register.this, MainActivity.class);
                                // mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -10,6 +10,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 public class Welcome extends AppCompatActivity {
     private TextView title;
     private ImageView imageView;
@@ -18,6 +22,10 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
+        AndroidNetworking.initialize(getApplicationContext());
+
+        FirebaseApp.initializeApp(getApplicationContext());
         View decorView = getWindow().getDecorView();
 
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;

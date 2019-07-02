@@ -1,8 +1,13 @@
 package com.Arslan.Majid.Alladin;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +22,12 @@ import android.widget.Toast;
 
 import com.Arslan.Majid.Alladin.Prevalent.Prevalent;
 import com.Arslan.Majid.Alladin.entities.Users;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +46,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.Arslan.Majid.Alladin.entities.Users;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.Arslan.Majid.Alladin.entities.Users.phone;
@@ -44,6 +59,7 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth auth;
     private boolean isFound;
     private DatabaseReference dbUser;
+    private DatabaseReference mDatabase;
     private FirebaseDatabase user;
     private FirebaseAuth mAuth;
     private ProgressDialog loadingBar;
@@ -72,6 +88,7 @@ public class Login extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
         mUserDatabase = FirebaseDatabase.getInstance().getReference("Users");
         mAuth = FirebaseAuth.getInstance();
+        statusCheck();
 
         txtSignUp = (TextView) findViewById(R.id.txtSignUp);
         txtSignUp.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +106,7 @@ public class Login extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               final String email = inputPhone.getText().toString();
+                final String email = inputPhone.getText().toString();
                 final String password = inputPassword.getText().toString();
 
                 if (!TextUtils.isEmpty(email) || !TextUtils.isEmpty(password)) {
@@ -110,19 +127,47 @@ public class Login extends AppCompatActivity {
 
     private void loginUser(final EditText inputPhone, final EditText inputPassword) {
 
-        mAuth.signInWithEmailAndPassword(inputPhone.getText().toString(),inputPassword.getText().toString() ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(inputPhone.getText().toString(), inputPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
 
                     loadingBar.dismiss();
 
-                    FirebaseUser current_user_id = mAuth.getCurrentUser();
+                    final FirebaseUser current_user_id = mAuth.getCurrentUser();
                     String uid = current_user_id.getUid();
 
-                    System.err.println("Current user is : "+ current_user_id);
-                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
+                    System.err.println("Current user is : " + current_user_id);
+
+
+                    Log.e("Current user is : ", current_user_id.getEmail());
+                    final String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
+                    try {
+
+                    Log.e("token",deviceToken);
+                    Log.e("email", current_user_id.getEmail());
+
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    AndroidNetworking.get("https://translationchatapp.herokuapp.com/createUserToken/"+current_user_id.getEmail()+"/"+deviceToken)
+
+                            .setPriority(Priority.HIGH)
+                            .build()
+                            .getAsJSONObject(new JSONObjectRequestListener() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    // do anything with response
+                                    Log.e("res", response.toString());
+                                }
+                                @Override
+                                public void onError(ANError error) {
+                                    // handle error
+                                }
+                            });
 
                     mUserDatabase.child(uid).child("device_token").setValue(deviceToken).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -131,13 +176,16 @@ public class Login extends AppCompatActivity {
                             Intent mainIntent = new Intent(Login.this, MainActivity.class);
                             //mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(mainIntent);
+                            getLocation();
                             finish();
+
+
+
+
 
 
                         }
                     });
-
-
 
 
                 } else {
@@ -153,6 +201,78 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+
+    private void getLocation() {
+        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(Login.this);
+        client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful()) {
+                    Location location = task.getResult();
+
+
+
+                    FirebaseUser current_user_id = mAuth.getCurrentUser();
+                    final String uid = current_user_id.getUid();
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+
+                    HashMap<String, Object> userMap = new HashMap<>();
+                    userMap.put("latitude", String.valueOf(location.getLatitude()));
+                    userMap.put("longitude", String.valueOf(location.getLongitude()));
+                    ref.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Login.this, "Location Updated successfully.", Toast.LENGTH_SHORT).show();
+                                loadingBar.dismiss();
+                            }
+                            if (!task.isSuccessful()) {
+                                task.getException();
+                            }
+
+
+                        }
+
+                    });
+
+
+                } else {
+                    Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+    public void statusCheck() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+
+        }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        Toast.makeText(Login.this, "Enable Gps First", Toast.LENGTH_SHORT).show();
+                        Intent intent  = new Intent(Login.this , Welcome.class);
+                        startActivity(intent);
+                        finish();
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 }
 
 
@@ -160,147 +280,3 @@ public class Login extends AppCompatActivity {
 
 
 
-
-//    private void LoginUser() {
-//        String Phonenum = inputPhone.getText().toString();
-//        String password = inputPassword.getText().toString();
-//
-////        SharedPreferences.Editor editor = getSharedPreferences("mydata", MODE_PRIVATE).edit();
-////        editor.putString("username", Phonenum);
-////        editor.putString("pass", password);
-////        editor.apply();
-//
-//        phone = Phonenum;
-//        Users.password = password;
-//
-//        if (TextUtils.isEmpty(Phonenum)) {
-//            Toast.makeText(this, "Please write your phone number...", Toast.LENGTH_SHORT).show();
-//        } else if (TextUtils.isEmpty(password)) {
-//            Toast.makeText(this, "Please write your password...", Toast.LENGTH_SHORT).show();
-//        } else {
-//            loadingBar.setTitle("Login Account");
-//            loadingBar.setMessage("Please wait, while we are checking the credentials.");
-//            loadingBar.setCanceledOnTouchOutside(false);
-//            loadingBar.show();
-//
-//
-//            AllowAccessToAccount(Phonenum, password);
-//        }
-//    }
-
-//
-//    private void AllowAccessToAccount(final String Phonenum, final String password) {
-////        if (chkBoxRememberMe.isChecked()) {
-////            Paper.book().write(Prevalent.UserPhoneKey, phone);
-////            Paper.book().write(Prevalent.UserPasswordKey, password);
-////        }
-//
-//        final DatabaseReference RootRef;
-//        RootRef = FirebaseDatabase.getInstance().getReference();
-//
-//        RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.child(parentDbName).child(Phonenum).exists()) {
-//                    Users usersData = dataSnapshot.child(parentDbName).child(Phonenum).getValue(Users.class);
-//
-//                    if (usersData.getPhone().equals(Phonenum)) {
-//                        if (usersData.getPassword().equals(password)) {
-//                            loadingBar.dismiss();
-//
-//                                Toast.makeText(Login.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
-//                                 System.err.println("Phone Number is " + Phonenum);
-//                                 System.err.println("Password is " + password);
-//                                 Intent intent = new Intent(Login.this, MainActivity.class);
-//                                //Prevalent.currentOnlineUser = usersData;
-//                                startActivity(intent);
-//                                finish();
-//
-//                        } else {
-//                            loadingBar.dismiss();
-//                            Toast.makeText(Login.this, "Password is incorrect.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                } else {
-//                    Toast.makeText(Login.this, "Account with this " + Phonenum + " number do not exists.", Toast.LENGTH_SHORT).show();
-//                    loadingBar.dismiss();
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-//}
-
-//    private void SignInUser(String email, String pass) {
-//    }
-//}
-
-
-
-//    private void logInUsers(final String phone, final String password){
-//        mDialog.setMessage("Please wait...");
-//        mDialog.show();
-//        mDialog.setCanceledOnTouchOutside(false);
-//        PhoneAuthProvider auth = PhoneAuthProvider.getInstance();
-//
-//        auth.verifyPhoneNumber(inputPhone.getText().toString(), 60, TimeUnit.SECONDS, Login.this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-//            @Override
-//            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-//                FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        mDialog.dismiss();
-//                        Toast.makeText(Login.this, "Logged In", Toast.LENGTH_SHORT).show();
-//                        Intent intent = new Intent(Login.this, MainActivity.class);
-//                        startActivity(intent);
-//
-//                        finish();
-//
-//                    }
-//                });
-//            }
-//
-//
-//            @Override
-//            public void onVerificationFailed(FirebaseException e) {
-//
-//                Log.i("dxdiag", e.getMessage());
-//
-//            }
-//        });
-//    }
-
-//    private void AllowAccessToAccount(final String phone, final String password) {
-//        dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                Users login = dataSnapshot.child(phone).getValue(Users.class);
-//                if (login.equals(phone)) {
-//                    if (!phone.isEmpty()) {
-//                        //Users login = dataSnapshot.child(phone).getValue(Users.class);
-//                        if (login.getPassword().equals(password)){
-//                            Toast.makeText(Login.this,"login",Toast.LENGTH_LONG).show();
-//                            Intent intent = new Intent(Login.this,MainActivity.class);
-//                            startActivity(intent);
-//                            loadingBar.dismiss();
-//                        }
-//                        else {
-//                            Toast.makeText(Login.this,"failed",Toast.LENGTH_LONG).show();
-//
-//                        }
-//                    }
-//                    else {
-//                        Toast.makeText(Login.this,"Not Registered member",Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
